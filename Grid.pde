@@ -25,19 +25,23 @@ class SimGrid extends Grid {
   float offsetY = 0;
   float spacing = 4;
   
+  float sw;
+  float sh;
+  
   void init() {
     super.init();
+    
+    sw = w / rows;
+    sh = h / cols;
   }
   
   void draw() {
-    float sw = w / rows;
-    float sh = h / cols;
-    
     stroke(255);
     int iP = 0;
-    for (int iC = 0; iC < cols; iC++) {
-      for (int iR = 0; iR < rows; iR++) {
-        gpixels[iP].draw();
+    for (int iR = 0; iR < rows; iR++) {
+      for (int iC = 0; iC < cols; iC++) {
+      
+        gpixels[iP++].draw();
         float x1 = sw * iC;
         float x2 = x1 + sw;
         float y1 = sh * iR;
@@ -45,6 +49,24 @@ class SimGrid extends Grid {
         
         rect(x1, y1, x2, y2);
       }
-    } 
+    }
+  }
+  
+  // calculate the grid # and set the pixel to red, or back to black
+  void mouseReleased() {
+    int iR = mouseX / int(sw);
+    int iC = mouseY / int(sh);
+    int iP = (iC * 10) + iR;
+    println("Got " + str(iC) + " x " + str(iR) + " - " + str(iP));
+    
+    if (gpixels[iP].rgb == color(0, 0, 0)) {
+      println("Set red");
+      gpixels[iP].set(color(255, 0, 0));
+      println(gpixels[iP].rgb);
+    } else {
+      println("Set black");
+      gpixels[iP].clear();
+      println(gpixels[iP].rgb);
+    }
   }
 }

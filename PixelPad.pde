@@ -34,6 +34,10 @@ void draw() {
   */
 }
 
+void mouseReleased() {
+  grid.mouseReleased();
+}
+
 void noteOn(int channel, int pitch, int velocity) {
   // Receive a noteOn
   println();
