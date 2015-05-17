@@ -2,10 +2,13 @@ import themidibus.*; //Import the library
 
 MidiBus myBus; // The MidiBus
 SimGrid grid;
+ControlP5 c5;
 
 void setup() {
-  size(600, 600);
+  size(600, 700);
   background(0);
+  
+  c5 = new ControlP5(this);
 
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
 
@@ -36,6 +39,22 @@ void draw() {
 
 void mouseReleased() {
   grid.mouseReleased();
+}
+
+void keyPressed() {
+  grid.keyPressed();
+}
+
+void controlEvent(ControlEvent theEvent) {
+  if (grid != null) grid.controlEvent(theEvent);
+}
+
+void saveCallback(File selected) {
+  grid.saveCallback(selected);
+}
+
+void loadCallback(File selected) {
+  grid.loadCallback(selected);
 }
 
 void noteOn(int channel, int pitch, int velocity) {

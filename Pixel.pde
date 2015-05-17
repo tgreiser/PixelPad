@@ -10,9 +10,9 @@ class Pixel {
   void set(color _rgb) {
     weight++;
     float opweight = 1.0 / float(weight);
-    println(rgb + " to " + _rgb + " weight=" + opweight);
+    //println(rgb + " to " + _rgb + " weight=" + opweight);
     rgb = lerpColor(rgb, _rgb, opweight);
-    println(rgb);
+    //println(rgb);
   }
   
   void draw() {
