@@ -10,6 +10,7 @@ import java.io.*;
 class Sequence {
   int step = 0;
   Boolean[][] data = new Boolean[1][100];
+  int initial_pixel = -1;
  
   void init() {
     initStep(0);
@@ -48,6 +49,7 @@ class Sequence {
   }
   
   void addPixel(int iP) {
+    if (initial_pixel == -1) { initial_pixel = iP; }
     data[step][iP] = true;
   }
   
@@ -80,6 +82,8 @@ class Sequence {
     try {
       FileOutputStream fos = new FileOutputStream(file);
       ObjectOutputStream oos = new ObjectOutputStream(fos);
+      Integer initial = initial_pixel;
+      oos.writeObject(initial);
       oos.writeObject(data);
       fos.close();
     } 
@@ -91,11 +95,13 @@ class Sequence {
   /**
    * Load the data from disk 
    */
-  public loadData(File file) {
+  public void loadData(File file) {
     Boolean[][] array = null;
+    Integer initial = -1;
     try {
       FileInputStream fis = new FileInputStream(file);
       ObjectInputStream ois = new ObjectInputStream(fis);
+      initial = (Integer) ois.readObject();
       array = (Boolean[][]) ois.readObject();
       fis.close();
     } 
@@ -105,7 +111,9 @@ class Sequence {
     catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    initial_pixel = initial;
     data = array;
+    println("Loaded with initial pixel " + initial_pixel);
   }
 }
 

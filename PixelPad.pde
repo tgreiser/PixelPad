@@ -1,24 +1,42 @@
 import themidibus.*; //Import the library
 
 MidiBus myBus; // The MidiBus
-SimGrid grid;
 ControlP5 c5;
+
+SimGridController grid;
+EditorController edit;
+MenuController menu;
+Controller[] ctrls;
 
 void setup() {
   size(600, 700);
   background(0);
+  
+  ctrls = new Controller[2];
+  grid = new SimGridController();
+  edit = new EditorController();
+  menu = new MenuController();
+  
+  ctrls[0] = menu;
+  ctrls[1] = edit;
   
   c5 = new ControlP5(this);
 
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
 
   myBus = new MidiBus(this, "padKONTROL 1 PORT A", "padKONTROL 1 CTRL"); // Create a new MidiBus
-  grid = new SimGrid();
-  grid.init();  
+  
+  for (Controller c : ctrls) {
+    c.setup(this);
+  }
 }
 
 void draw() {
-  grid.draw();
+  background(0);
+  
+  for (Controller c : ctrls) {
+    c.draw();
+  }
   
   /*
   int channel = 0;
@@ -38,23 +56,35 @@ void draw() {
 }
 
 void mouseReleased() {
-  grid.mouseReleased();
+  for (Controller c : ctrls) {
+    c.mouseReleased();
+  }
+}
+
+void mouseDragged() {
+  for (Controller c : ctrls) {
+    c.mouseDragged();
+  }
 }
 
 void keyPressed() {
-  grid.keyPressed();
+  for (Controller c : ctrls) {
+    c.keyPressed();
+  }
 }
 
 void controlEvent(ControlEvent theEvent) {
-  if (grid != null) grid.controlEvent(theEvent);
+  for (Controller c : ctrls) {
+    if (c != null) c.controlEvent(theEvent);
+  }
 }
 
 void saveCallback(File selected) {
-  grid.saveCallback(selected);
+  edit.saveCallback(selected);
 }
 
 void loadCallback(File selected) {
-  grid.loadCallback(selected);
+  edit.loadCallback(selected);
 }
 
 void noteOn(int channel, int pitch, int velocity) {
