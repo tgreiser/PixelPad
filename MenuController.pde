@@ -10,9 +10,9 @@ class MenuController extends Controller {
       .setPosition(5, 605)
       .setColorBackground(color(55))
       .setSize(57, 19)
-      .addItem("Edit", 1)
-      .addItem("Play", 2)
-      .setValue(2.0)
+      .addItem("Edit", 1.0)
+      .addItem("Play", 2.0)
+      .setNoneSelectedAllowed(false)
       ;
   }
   
@@ -23,9 +23,13 @@ class MenuController extends Controller {
         ctrls[1] = edit;
         edit.show();
       } else if (val == 2.0) {
-        ctrls[1] = grid;
-        edit.hide();
+        playMode();
       }
     }
+  }
+  
+  void playMode() {
+    ctrls[1] = grid;
+    edit.hide();
   }
 }

@@ -14,12 +14,6 @@ class Sequence {
  
   void init() {
     initStep(0);
-    
-    // Create file and save 2D array
-    //File file = new File (sketchPath("") + "arrayData");
-    //saveData(file, array0);
-    // Load the data into second 2D array
-    //array1 = loadData(file);
   }
   
   void initStep(int iS) {

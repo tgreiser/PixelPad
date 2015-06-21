@@ -1,6 +1,3 @@
-import themidibus.*; //Import the library
-
-MidiBus myBus; // The MidiBus
 ControlP5 c5;
 
 SimGridController grid;
@@ -8,27 +5,32 @@ EditorController edit;
 MenuController menu;
 Controller[] ctrls;
 
+PadKontrol midi;
+
 void setup() {
   size(600, 700);
   background(0);
+  
+  midi = new PadKontrol(this);
   
   ctrls = new Controller[2];
   grid = new SimGridController();
   edit = new EditorController();
   menu = new MenuController();
   
+  // have to setup grid because it isn't loaded in ctrls
+  grid.setup(this);
+  
   ctrls[0] = menu;
   ctrls[1] = edit;
   
   c5 = new ControlP5(this);
-
-  MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-
-  myBus = new MidiBus(this, "padKONTROL 1 PORT A", "padKONTROL 1 CTRL"); // Create a new MidiBus
   
   for (Controller c : ctrls) {
     c.setup(this);
   }
+  
+  menu.mode.activate("Play");
 }
 
 void draw() {
@@ -85,36 +87,6 @@ void saveCallback(File selected) {
 
 void loadCallback(File selected) {
   edit.loadCallback(selected);
-}
-
-void noteOn(int channel, int pitch, int velocity) {
-  // Receive a noteOn
-  println();
-  println("Note On:");
-  println("--------");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
-}
-
-void noteOff(int channel, int pitch, int velocity) {
-  // Receive a noteOff
-  println();
-  println("Note Off:");
-  println("--------");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
-}
-
-void controllerChange(int channel, int number, int value) {
-  // Receive a controllerChange
-  println();
-  println("Controller Change:");
-  println("--------");
-  println("Channel:"+channel);
-  println("Number:"+number);
-  println("Value:"+value);
 }
 
 void delay(int time) {
