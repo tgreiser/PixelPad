@@ -46,7 +46,7 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     
     color c = this.getColor(velocity);
     
-    grid.addSeq("001.seq", c, new PVector(bc * 3, br * 3), false, false);
+    grid.addSeq("002.seq", c, new PVector(bc * 3, br * 3), false, false);
   }
   
   color getColor(int velocity) {

@@ -15,6 +15,8 @@ class Sequence {
   boolean flipX;
   boolean flipY;
   int offset = 0;
+  int offsetRows = 0;
+  int offsetCols = 0;
  
   void init() {
     initStep(0);
@@ -55,24 +57,16 @@ class Sequence {
     data[step][iP] = false;
   }
   
-  // return all pixels in the current step
-  Pixel[] pixels() {
-    int len = data[step].length;
-    Pixel[] newp = new Pixel[len];
-      
-    for (int iX = 0; iX < len; iX++) {
-      newp[iX] = new Pixel();
-      if (data[step][iX + this.offset] == true) {
-        newp[iX].set(this.c);
-      }
-    }
-    return newp;
-  }
-  
   boolean stepHas(int value) {
-    if (value - this.offset >= data[this.step].length || value - this.offset < 0) { return false; }
+    value = value - this.offset;
+    int r = grid.calcRow(value);
+    int c = grid.calcCol(value);
+    
+    if (r + this.offsetRows >= grid.rows || r + this.offsetRows < 0) { return false; }
+    if (c + this.offsetCols >= grid.cols || c + this.offsetCols < 0) { return false; }
     //println(" Returning; " + str(data[this.step][value-this.offset]));
-    return data[this.step][value-this.offset];
+    if (value < 0 || value >= data[this.step].length) { return false; }
+    return data[this.step][value];
   }
 
   /**

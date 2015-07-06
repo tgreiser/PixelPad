@@ -39,16 +39,24 @@ class GridController extends Controller {
     // need to figure out the offset
     // compare start position (PVector) against sequence.initial_pixel (0-99)
     //int pstart = position.X * 10 + position.Y;
-    
-    s.offset = int(position.x) - (s.initial_pixel % 10) + 
-     (10 * (int(position.y) - floor(s.initial_pixel / 10)));
+    s.offsetRows = int(position.x) - this.calcRow(s.initial_pixel);
+    s.offsetCols = int(position.y) - this.calcCol(s.initial_pixel);
+    s.offset = s.offsetRows + (this.cols * s.offsetCols);
     
     //println("initial Y:" + str(floor(s.initial_pixel / 10)));
     //println("posY: " + str(int(position.y)));
-    //println("offset: " + str(s.offset));
+    //println("offset: " + str(s.offset) + " co: " + str(s.offsetCols) + " ro: " + str(s.offsetRows));
     
     // s.offset...
     sequences.add(s);
+  }
+  
+  int calcRow(int value) {
+    return value % this.rows;
+  }
+  
+  int calcCol(int value) {
+    return floor(value / this.cols);
   }
 }
 
