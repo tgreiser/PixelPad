@@ -3,6 +3,7 @@ ControlP5 c5;
 SimGridController grid;
 EditorController edit;
 MenuController menu;
+Keyboard kb;
 Controller[] ctrls;
 
 PadKontrol midi;
@@ -12,6 +13,7 @@ void setup() {
   background(0);
   
   midi = new PadKontrol(this);
+  kb = new Keyboard(this);
   
   ctrls = new Controller[2];
   grid = new SimGridController();
@@ -39,22 +41,6 @@ void draw() {
   for (Controller c : ctrls) {
     c.draw();
   }
-  
-  /*
-  int channel = 0;
-  int pitch = 64;
-  int velocity = 127;
-
-  myBus.sendNoteOn(channel, pitch, velocity); // Send a Midi noteOn
-  delay(200);
-  myBus.sendNoteOff(channel, pitch, velocity); // Send a Midi nodeOff
-
-  int number = 0;
-  int value = 90;
-
-  myBus.sendControllerChange(channel, number, value); // Send a controllerChange
-  delay(2000);
-  */
 }
 
 void mouseReleased() {
@@ -73,6 +59,7 @@ void keyPressed() {
   for (Controller c : ctrls) {
     c.keyPressed();
   }
+  kb.keyPressed();
 }
 
 void controlEvent(ControlEvent theEvent) {

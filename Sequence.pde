@@ -11,6 +11,10 @@ class Sequence {
   int step = 0;
   Boolean[][] data = new Boolean[1][100];
   int initial_pixel = -1;
+  color c;
+  boolean flipX;
+  boolean flipY;
+  int offset = 0;
  
   void init() {
     initStep(0);
@@ -58,15 +62,17 @@ class Sequence {
       
     for (int iX = 0; iX < len; iX++) {
       newp[iX] = new Pixel();
-      if (data[step][iX] == true) {
-        newp[iX].set(color(255, 0, 0));
+      if (data[step][iX + this.offset] == true) {
+        newp[iX].set(this.c);
       }
     }
     return newp;
   }
   
   boolean stepHas(int value) {
-    return data[step][value];
+    if (value - this.offset >= data[this.step].length || value - this.offset < 0) { return false; }
+    //println(" Returning; " + str(data[this.step][value-this.offset]));
+    return data[this.step][value-this.offset];
   }
 
   /**

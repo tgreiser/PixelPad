@@ -6,6 +6,7 @@ class GridController extends Controller {
   
   Pixel[] gpixels;
   boolean isAlternating = true;
+  ArrayList<Sequence> sequences = new ArrayList<Sequence>();
   
   void setup(PApplet _app) {
     super.setup(_app);
@@ -20,6 +21,35 @@ class GridController extends Controller {
     }
     println("Initialized " + str(iP) + " pixels");
   }
+  
+  /*
+  seq_id - filename - 001.seq
+  color c - sequence color - color type
+  position - start position - PVector type
+  flipX - reflect along X axis - boolean
+  flipY - feflect along Y axis - boolean
+  */
+  void addSeq(String seq_id, color c, PVector position, boolean flipX, boolean flipY) {
+    Sequence s = new Sequence();
+    s.loadData(new File(sketchPath+"/data/"+seq_id));
+    s.c = c;
+    s.flipX = flipX;
+    s.flipY = flipY;
+    
+    // need to figure out the offset
+    // compare start position (PVector) against sequence.initial_pixel (0-99)
+    //int pstart = position.X * 10 + position.Y;
+    
+    s.offset = int(position.x) - (s.initial_pixel % 10) + 
+     (10 * (int(position.y) - floor(s.initial_pixel / 10)));
+    
+    //println("initial Y:" + str(floor(s.initial_pixel / 10)));
+    //println("posY: " + str(int(position.y)));
+    //println("offset: " + str(s.offset));
+    
+    // s.offset...
+    sequences.add(s);
+  }
 }
 
 class SimGridController extends GridController {
@@ -28,19 +58,12 @@ class SimGridController extends GridController {
   float offsetX = 0;
   float offsetY = 0;
   
-  float sw;
-  float sh;
-  int max_seq = 64;
-  Sequence[] sequences;
+  float sw; // square width
+  float sh; // square height .. *heh*
     
   void setup(PApplet _app) {
     super.setup(_app);
-    
-    sequences = new Sequence[max_seq];
-    for (int iX = 0; iX < max_seq; iX++) {
-      sequences[iX] = new Sequence();
-    }
-    
+        
     sw = w / rows;
     sh = h / cols;
   }
@@ -50,19 +73,30 @@ class SimGridController extends GridController {
     int iP = 0;
     for (int iR = 0; iR < rows; iR++) {
       for (int iC = 0; iC < cols; iC++) {
-        //gpixels[iP].clear();
+        gpixels[iP].clear();
         
-        //if (sequence.stepHas(iP)) {
-        //  gpixels[iP].set(color(255, 0, 0));
-        //}
+        for (int iX = 0; iX < sequences.size(); iX++) {
+          if (sequences.get(iX).stepHas(iP)) {
+            //println("Setting pixel " + str(iP) + " R: " + str(red(sequences.get(iX).c)));
+            gpixels[iP].set(sequences.get(iX).c);
+          }
+        }
         
-        //gpixels[iP++].draw();
-        fill(0);
+        gpixels[iP++].draw();
+
         float x1 = sw * iC;
         float y1 = sh * iR;
         
         rect(x1, y1, sw, sh);
       }
-    } 
+    }
+    
+    delay(100);
+    for (int iX = 0; iX < sequences.size(); iX++) {
+      int last = sequences.get(iX).step;
+      sequences.get(iX).nextStep();
+      if (sequences.get(iX).step == last) { sequences.remove(iX); }
+    }
   }
+
 }

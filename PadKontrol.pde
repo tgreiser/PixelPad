@@ -42,17 +42,24 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
       br = 3;
       bc = pitch % 36;
     }
+    //println("BC: " + bc + " BR:" + br);
+    
+    color c = this.getColor(velocity);
+    
+    grid.addSeq("001.seq", c, new PVector(bc * 3, br * 3), false, false);
   }
   
-  void noteOff(int channel, int pitch, int velocity) {
-    // Receive a noteOff
-    println();
-    println("Note Off:");
-    println("--------");
-    println("Channel:"+channel);
-    println("Pitch:"+pitch);
-    println("Velocity:"+velocity);
+  color getColor(int velocity) {
+    float mult = float(velocity) / 128.0;
+
+    int r = int(random(255) * mult);
+        println("Mult: " + str(mult) + " R:" + str(r));
+    int g = int(random(255) * mult);
+    int b = int(random(255) * mult);
+    return color(r, g, b);
   }
+  
+  void noteOff(int channel, int pitch, int velocity) {}
   
   void controllerChange(int channel, int number, int value) {
     // Receive a controllerChange
