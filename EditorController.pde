@@ -63,7 +63,7 @@ class EditorController extends SimGridController {
     if (theEvent.isFrom(save)) {
       save();
     } else if (theEvent.isFrom(load)) {
-      selectInput("What sequence would you like to load?", "loadCallback", new File(sketchPath+"/data/000.seq"));
+      selectInput("What sequence would you like to load?", "loadCallback", new File(config.get("dataPath")+"sequences\\000.seq"));
     } else if (theEvent.isFrom(newseq)) {
       sequence = new Sequence();
       sequence.init();
@@ -106,7 +106,7 @@ class EditorController extends SimGridController {
   
   void save() {
     println("Running selectOutput..");
-    selectOutput("Where would you like to save your sequence?", "saveCallback", new File(sketchPath+"/data/000.seq"));
+    selectOutput("Where would you like to save your sequence?", "saveCallback", new File(config.get("dataPath")+"sequences\\000.seq"));
   }
   
   void saveCallback(File selection) {

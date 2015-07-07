@@ -44,19 +44,9 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     }
     //println("BC: " + bc + " BR:" + br);
     
-    color c = this.getColor(velocity);
+    color c = grid.getColor(velocity);
     
-    grid.addSeq("002.seq", c, new PVector(bc * 3, br * 3), false, false);
-  }
-  
-  color getColor(int velocity) {
-    float mult = float(velocity) / 128.0;
-
-    int r = int(random(255) * mult);
-        println("Mult: " + str(mult) + " R:" + str(r));
-    int g = int(random(255) * mult);
-    int b = int(random(255) * mult);
-    return color(r, g, b);
+    grid.addSeq(c, new PVector(bc * 3, br * 3), false, false);
   }
   
   void noteOff(int channel, int pitch, int velocity) {}
@@ -69,5 +59,7 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     println("Channel:"+channel);
     println("Number:"+number);
     println("Value:"+value);
+    
+    grid.clockDelay = int(map(value, 0, 127, 50, 500));
   }
 }

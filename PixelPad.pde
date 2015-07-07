@@ -5,12 +5,17 @@ EditorController edit;
 MenuController menu;
 Keyboard kb;
 Controller[] ctrls;
+StringDict config;
 
 PadKontrol midi;
 
 void setup() {
   size(600, 700);
   background(0);
+  c5 = new ControlP5(this);
+  
+  config = new StringDict();
+  config.set("dataPath", dataPath("") + "\\");
   
   midi = new PadKontrol(this);
   kb = new Keyboard(this);
@@ -21,12 +26,11 @@ void setup() {
   menu = new MenuController();
   
   // have to setup grid because it isn't loaded in ctrls
+  println("Initial grid setup from PApplet"); //<>//
   grid.setup(this);
   
   ctrls[0] = menu;
   ctrls[1] = edit;
-  
-  c5 = new ControlP5(this);
   
   for (Controller c : ctrls) {
     c.setup(this);

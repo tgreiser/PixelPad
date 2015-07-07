@@ -3,13 +3,18 @@ import controlP5.*;
 class GridController extends Controller {
   int rows = 10;
   int cols = 10;
+  int clockDelay = 250; 
   
   Pixel[] gpixels;
   boolean isAlternating = true;
   ArrayList<Sequence> sequences = new ArrayList<Sequence>();
+  String seq_id = "002.seq";
+  
+  ListBox seqList;
   
   void setup(PApplet _app) {
     super.setup(_app);
+    println("Setting up Grid");
     
     gpixels = new Pixel[rows * cols];
     
@@ -20,6 +25,41 @@ class GridController extends Controller {
       }
     }
     println("Initialized " + str(iP) + " pixels");
+    
+    seqList = c5.addListBox("SequenceList")
+      .setPosition(100, 620)
+      .setSize(90, 75)
+      .setItemHeight(15)
+      .setBarHeight(15)
+      .setColorBackground(color(255, 128))
+      .setColorActive(color(0))
+      .setColorForeground(color(255, 100,0))
+      ;
+
+    seqList.captionLabel().toUpperCase(true);
+    seqList.captionLabel().set("Sequence");
+    seqList.captionLabel().setColor(0xffff0000);
+    seqList.captionLabel().style().marginTop = 3;
+    seqList.valueLabel().style().marginTop = 3;
+    
+    File file = new File(config.get("dataPath") + "\\sequences\\");
+    File[] files = file.listFiles();
+    for (int i = 0; i < files.length; i++) {
+      ListBoxItem lbi = seqList.addItem(files[i].getName(), i);
+      lbi.setColorBackground(color(55));
+    }
+  }
+  
+  void controlEvent(ControlEvent theEvent) {
+    println("Got control event: " + theEvent.name());
+    if (theEvent.name().equals(seqList.name())) {
+      int pick = (int)theEvent.group().value();
+      println("Picked " + pick);
+      println("File " + seqList.getItem(pick).getText());
+      
+      seqList.getItem(pick).setColorBackground(color(0, 255, 0));
+      this.seq_id = seqList.getItem(pick).getText();
+    }
   }
   
   /*
@@ -29,9 +69,9 @@ class GridController extends Controller {
   flipX - reflect along X axis - boolean
   flipY - feflect along Y axis - boolean
   */
-  void addSeq(String seq_id, color c, PVector position, boolean flipX, boolean flipY) {
+  void addSeq(color c, PVector position, boolean flipX, boolean flipY) {
     Sequence s = new Sequence();
-    s.loadData(new File(sketchPath+"/data/"+seq_id));
+    s.loadData(new File(config.get("dataPath")+"sequences\\" + this.seq_id));
     s.c = c;
     s.flipX = flipX;
     s.flipY = flipY;
@@ -68,15 +108,62 @@ class SimGridController extends GridController {
   
   float sw; // square width
   float sh; // square height .. *heh*
-    
+  boolean colortest = true;
+  Palette p;
+  int startSecond = 0;
+  int startMinute = 0;
+   
   void setup(PApplet _app) {
+    println("SimGrid super");
     super.setup(_app);
         
+    println("Setting up simgrid");
     sw = w / rows;
     sh = h / cols;
+    p = new Palette();
+    p.load("EarlyCGA.tsv");
+    startSecond = second();
+    startMinute = minute();
+    println("Done simgrid");
   }
   
   void draw() {
+    if (colortest) {
+      drawColorTest();
+    } else {
+      drawPixelPad();
+    }
+  }
+  
+  void drawColorTest() {
+    int seconds = second() - this.startSecond;
+    int minutes = minute() - this.startMinute;
+    seconds = seconds + 60 * minutes;
+    println("Seconds: " + seconds + " startSec: " + this.startSecond);
+    if (seconds >= this.gpixels.length) {
+      colortest = false;
+    } else {
+      for (int iX = seconds; iX >= 0; iX--) {
+        
+        color c = getColor(127 - iX);
+        println("Seconds " + seconds + " iX: " + iX + " c:" + hex(c));
+        gpixels[iX].clear();
+        gpixels[iX].set(c);
+        this.drawPixel(iX, this.calcRow(iX), this.calcCol(iX));
+      }
+    }
+  }
+  
+  void drawPixel(int pixelId, int row, int col) {
+    gpixels[pixelId].draw();
+
+    float x1 = sw * col;
+    float y1 = sh * row;
+        
+    rect(x1, y1, sw, sh);
+  }
+  
+  void drawPixelPad() {
     stroke(255);
     int iP = 0;
     for (int iR = 0; iR < rows; iR++) {
@@ -89,22 +176,25 @@ class SimGridController extends GridController {
             gpixels[iP].set(sequences.get(iX).c);
           }
         }
-        
-        gpixels[iP++].draw();
-
-        float x1 = sw * iC;
-        float y1 = sh * iR;
-        
-        rect(x1, y1, sw, sh);
+        this.drawPixel(iP++, iR, iC);
       }
     }
     
-    delay(100);
+
     for (int iX = 0; iX < sequences.size(); iX++) {
       int last = sequences.get(iX).step;
       sequences.get(iX).nextStep();
       if (sequences.get(iX).step == last) { sequences.remove(iX); }
     }
+    delay(this.clockDelay);
   }
 
+  // input is 0-127
+  
+  // Implementing an early CGA monitor standard
+  // https://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes
+  color getColor(int input) {
+    
+    return p.pick(input);
+  }
 }
