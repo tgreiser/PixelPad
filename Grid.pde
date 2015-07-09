@@ -121,7 +121,7 @@ class SimGridController extends GridController {
     sw = w / rows;
     sh = h / cols;
     p = new Palette();
-    p.load("EarlyCGA.tsv");
+    p.load("NES.tsv");
     startSecond = second();
     startMinute = minute();
     println("Done simgrid");
@@ -140,16 +140,18 @@ class SimGridController extends GridController {
     int minutes = minute() - this.startMinute;
     seconds = seconds + 60 * minutes;
     println("Seconds: " + seconds + " startSec: " + this.startSecond);
-    if (seconds >= this.gpixels.length) {
+    if (seconds >= 5) {
       colortest = false;
     } else {
-      for (int iX = seconds; iX >= 0; iX--) {
-        
-        color c = getColor(127 - iX);
-        println("Seconds " + seconds + " iX: " + iX + " c:" + hex(c));
-        gpixels[iX].clear();
-        gpixels[iX].set(c);
-        this.drawPixel(iX, this.calcRow(iX), this.calcCol(iX));
+      int iX = 0;
+      for (int iC = 0; iC < cols; iC++) {
+        for (int iR = 0; iR < rows; iR++) {
+          color c = getColor(int(random(127)));
+          gpixels[iX].clear();
+          gpixels[iX].set(c);
+          this.drawPixel(iX, this.calcRow(iX), this.calcCol(iX));
+          iX++;
+        }
       }
     }
   }
