@@ -13,10 +13,10 @@ Controls:
 Currently, korg padKontrol is supported, or you can use your computer keyboard (no velocity control).
 
 Keys:
-1-4
-q-r
-a-f
-z-v
+* 1-4
+* q-r
+* a-f
+* z-v
 
 Requirements:
 
