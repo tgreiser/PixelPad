@@ -64,7 +64,7 @@ class Sequence {
     boolean debug = false;
     int r = 0;
     int c = 0;
-    if (value == 16) {
+    if (value == 1116) {
       debug = true; 
       println("Value " + value + " ip " + initial_pixel + " offset " + this.offset+ " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols);
     }

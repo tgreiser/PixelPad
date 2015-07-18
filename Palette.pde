@@ -6,6 +6,7 @@ class Palette {
     //int(random(16));
     // black isn't a valid pick, do something else
     if (colors[pick] == color(0, 0, 0)) { return this.pick(int(random(128))); }
+    //println("Pick color : " + pick + " input: " + input + " nuM: " + this.colors.length + " color: " + colors[pick]);
     
     return colors[pick];
   }
