@@ -1,11 +1,18 @@
+import java.net.*;
+import java.util.Arrays;
+
 ControlP5 c5;
 
+OPC opc;
 SimGridController grid;
 EditorController edit;
 MenuController menu;
 Keyboard kb;
 Controller[] ctrls;
 StringDict config;
+String server = "192.168.0.12";
+boolean ENABLE_LED = false;
+boolean DRAW_GRID = true;
 
 PadKontrol midi;
 
@@ -13,6 +20,7 @@ void setup() {
   size(600, 700);
   background(0);
   c5 = new ControlP5(this);
+  if (ENABLE_LED) { opc = new OPC(this, server, 7890); }
   
   config = new StringDict();
   config.set("dataPath", dataPath("") + "\\");
@@ -35,6 +43,7 @@ void setup() {
   for (Controller c : ctrls) {
     c.setup(this);
   }
+  if (ENABLE_LED) { section1(opc); }
   
   menu.mode.activate("Play");
 }

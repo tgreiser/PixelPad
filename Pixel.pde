@@ -16,6 +16,11 @@ class Pixel {
   }
   
   void draw() {
+    if (DRAW_GRID) {
+      stroke(255);
+    } else {
+      stroke(0);
+    }
     fill(rgb);
   }
 }

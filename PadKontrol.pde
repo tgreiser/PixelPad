@@ -45,8 +45,14 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     //println("BC: " + bc + " BR:" + br);
     
     color c = grid.getColor(velocity);
+    boolean flipX = false;
+    boolean flipY = false;
+    if (bc > 1) { flipY = true; }
+    if (br <= 1) { flipX = true; }
     
-    grid.addSeq(c, new PVector(bc * 3, br * 3), false, false);
+    println("bc: " + bc + " br: " + br +" fX: " + flipX + " fY: " + flipY);
+    
+    grid.addSeq(c, new PVector(bc * 3, br * 3), flipX, flipY);
   }
   
   void noteOff(int channel, int pitch, int velocity) {}
@@ -60,6 +66,10 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     println("Number:"+number);
     println("Value:"+value);
     
-    grid.clockDelay = int(map(value, 0, 127, 50, 500));
+    if (number == 20) {
+      // pick a sequence
+    } else if (number == 21) {
+      grid.clockDelay = int(map(value, 0, 127, 1, 200));
+    }
   }
 }

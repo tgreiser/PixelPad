@@ -57,17 +57,74 @@ class Sequence {
     data[step][iP] = false;
   }
   
+  /*
+  Disabled cause not working yet
+  */
   boolean stepHas(int value) {
-    value = value - this.offset;
-    int r = grid.calcRow(value);
-    int c = grid.calcCol(value);
+    boolean debug = false;
+    int r = 0;
+    int c = 0;
+    if (value == 16) {
+      debug = true; 
+      println("Value " + value + " ip " + initial_pixel + " offset " + this.offset+ " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols);
+    }
     
-    if (r + this.offsetRows >= grid.rows || r + this.offsetRows < 0) { return false; }
-    if (c + this.offsetCols >= grid.cols || c + this.offsetCols < 0) { return false; }
-    //println(" Returning; " + str(data[this.step][value-this.offset]));
+    // flip around initial_pixel
+    // -x + (2 * row|col)
+    if (flipX) {
+      int ri = grid.calcRow(initial_pixel);
+      r = -1 * grid.calcRow(value) + (2 * ri);
+      r = r + this.offsetRows;
+      if (debug) println("ri: " + ri + " from " + initial_pixel);
+      if (r >= grid.rows || r < 0) { return false; }
+    } else {
+      r = grid.calcRow(value);
+      if (r >= grid.rows || r < 0) { return false; }
+      r -= this.offsetRows;
+    }
+    if (flipY) {
+      int ci = grid.calcCol(initial_pixel);
+      c = -1 * grid.calcCol(value) + (2 * ci);
+      c = c + this.offsetCols;
+      if (debug) println("c: " + c + " ci: " + ci + " from " + initial_pixel);
+      if (c >= grid.cols || c < 0) { return false; }
+    } else {
+      // kind of strange how this is different from rows
+      c = grid.calcCol(value - this.offset);
+      if (c + this.offsetCols >= grid.cols || c + this.offsetCols < 0) { return false; }
+    }
+    
+    if (debug) { println("Post flip Value " + value + " r: " + r + " c: " + c); }    
+    
+    value = 10*(r)+c;
+    if (debug) { println("Final value " + value); }
+    
     if (value < 0 || value >= data[this.step].length) { return false; }
     return data[this.step][value];
   }
+  
+  boolean stepHasDisabled(int value) {
+    boolean debug = false;
+    if (value == 99) {
+      debug = true; 
+      println("Value " + value + " offset " + this.offset+ " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols);
+    }
+    value = value - this.offset;
+    int r = grid.calcRow(value);
+    int c = grid.calcCol(value);
+    if (debug) { println("Value " + value + " r: " + r + " c: " + c); }
+    
+    if (r + this.offsetRows >= grid.rows || r + this.offsetRows < 0) { return false; }
+    if (c + this.offsetCols >= grid.cols || c + this.offsetCols < 0) { return false; }
+    
+    if (debug) { println("Value " + value + " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols); }
+    
+    value = 10*(r)+c;
+    if (debug) { println("Final value " + value); }
+    if (value < 0 || value >= data[this.step].length) { return false; }
+    return data[this.step][value];
+  }
+  
 
   /**
    * Save the data to disk

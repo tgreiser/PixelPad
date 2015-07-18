@@ -8,7 +8,7 @@ class GridController extends Controller {
   Pixel[] gpixels;
   boolean isAlternating = true;
   ArrayList<Sequence> sequences = new ArrayList<Sequence>();
-  String seq_id = "002.seq";
+  String seq_id = "000.seq";
   
   ListBox seqList;
   
@@ -79,23 +79,23 @@ class GridController extends Controller {
     // need to figure out the offset
     // compare start position (PVector) against sequence.initial_pixel (0-99)
     //int pstart = position.X * 10 + position.Y;
-    s.offsetRows = int(position.x) - this.calcRow(s.initial_pixel);
-    s.offsetCols = int(position.y) - this.calcCol(s.initial_pixel);
-    s.offset = s.offsetRows + (this.cols * s.offsetCols);
+    s.offsetRows = int(position.y) - this.calcRow(s.initial_pixel);
+    s.offsetCols = int(position.x) - this.calcCol(s.initial_pixel);
+    s.offset = s.offsetCols + (this.rows * s.offsetRows);
     
-    //println("initial Y:" + str(floor(s.initial_pixel / 10)));
-    //println("posY: " + str(int(position.y)));
-    //println("offset: " + str(s.offset) + " co: " + str(s.offsetCols) + " ro: " + str(s.offsetRows));
+    //println("initial Y:" + this.calcRow(s.initial_pixel) + " initX: " + this.calcCol(s.initial_pixel));
+    //println("posY: " + str(int(position.y)) + " posX: " + position.x);
+    println("offset: " + str(s.offset) + " co: " + str(s.offsetCols) + " ro: " + str(s.offsetRows) + " flipX: " + flipX + " flipY: " + flipY);
     
     // s.offset...
     sequences.add(s);
   }
   
-  int calcRow(int value) {
+  int calcCol(int value) {
     return value % this.rows;
   }
   
-  int calcCol(int value) {
+  int calcRow(int value) {
     return floor(value / this.cols);
   }
 }
@@ -140,7 +140,7 @@ class SimGridController extends GridController {
     int minutes = minute() - this.startMinute;
     seconds = seconds + 60 * minutes;
     println("Seconds: " + seconds + " startSec: " + this.startSecond);
-    if (seconds >= 5) {
+    if (seconds >= 2) {
       colortest = false;
     } else {
       int iX = 0;
@@ -174,7 +174,8 @@ class SimGridController extends GridController {
         
         for (int iX = 0; iX < sequences.size(); iX++) {
           if (sequences.get(iX).stepHas(iP)) {
-            //println("Setting pixel " + str(iP) + " R: " + str(red(sequences.get(iX).c)));
+            println("Setting pixel " + str(iP));
+           // + " R: " + str(red(sequences.get(iX).c)));
             gpixels[iP].set(sequences.get(iX).c);
           }
         }
@@ -193,8 +194,7 @@ class SimGridController extends GridController {
 
   // input is 0-127
   
-  // Implementing an early CGA monitor standard
-  // https://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes
+  // Picks a color from the current palette
   color getColor(int input) {
     
     return p.pick(input);
