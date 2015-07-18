@@ -1,3 +1,23 @@
+class MyCheckbox {
+  color colorActive = #133453;
+  color colorBG = #2A4D6E;
+  color colorSelected = #267257;
+
+  CheckBox cb;
+  boolean value = false;
+  
+  MyCheckbox(ControlP5 c5, String title, PVector pos, PVector size) {
+    this.cb = c5.addCheckBox(title)
+      .setPosition(pos.x, pos.y)
+      .setSize(int(size.x), int(size.y))
+      .setItemsPerRow(1)
+      .setSpacingColumn(30)
+      .setSpacingRow(5)
+      .setColorBackground(this.colorBG)
+      .setColorActive(this.colorSelected);
+  }
+}
+
 class LoadList {
   color colorActive = #133453;
   color colorBG = #2A4D6E;

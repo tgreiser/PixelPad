@@ -74,6 +74,7 @@ class SimGridController extends GridController {
   float h = 600;
   float offsetX = 0;
   float offsetY = 0;
+  boolean velocity_colors;
   
   float sw; // square width
   float sh; // square height .. *heh*
@@ -165,7 +166,7 @@ class SimGridController extends GridController {
   
   // Picks a color from the current palette
   color getColor(int input) {
-    
+    if (this.velocity_colors == false) { input = int(random(128)); }
     return p.pick(input);
   }
 }
@@ -173,24 +174,31 @@ class SimGridController extends GridController {
 class PlayGridController extends SimGridController {
   SequenceLoadList seqList;
   PaletteLoadList paletteList;
+  MyCheckbox cbOptions;
+  
   
   void setup(PApplet _app) {
     super.setup(_app);
     
     seqList = new SequenceLoadList(c5, "Sequence", new PVector(100, 630), new PVector(80, 100));
-    paletteList = new PaletteLoadList(c5, "Palette", new PVector(200, 630), new PVector(80, 100));
+    paletteList = new PaletteLoadList(c5, "Palette", new PVector(200, 630), new PVector(160, 100));
+    cbOptions = new MyCheckbox(c5, "Options", new PVector(380, 605), new PVector(30, 20));
+    cbOptions.cb.addItem("Show Grid", 0);
+    cbOptions.cb.toggle(0);
+    cbOptions.cb.addItem("Velocity Colors", 1);
+    cbOptions.cb.toggle(1);
   }
   
   void hide() {
     seqList.list.setVisible(false);
     paletteList.list.setVisible(false);
-    //.setVisible(false);
+    cbOptions.cb.setVisible(false);
   }
   
   void show() {
     seqList.list.setVisible(true);
     paletteList.list.setVisible(true);
-    //newseq.setVisible(true);
+    cbOptions.cb.setVisible(true);
   }
   
   void controlEvent(ControlEvent theEvent) {
@@ -207,6 +215,11 @@ class PlayGridController extends SimGridController {
       int pick = (int)theEvent.group().value();
       println("Picked " + pick);
       paletteList.selected(pick);
+    } else if (theEvent.name().equals(cbOptions.cb.name())) {
+      println(cbOptions.cb.getArrayValue());
+      float[] optVals = theEvent.getArrayValue();
+      DRAW_GRID = optVals[0] == 1.0;
+      this.velocity_colors = optVals[1] == 1.0;
     }
   }
 }
