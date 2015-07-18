@@ -68,6 +68,7 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     
     if (number == 20) {
       // pick a sequence
+      grid.seqList.selected(int(map(value, 0, 127, 0, grid.seqList.length()-1)));
     } else if (number == 21) {
       grid.clockDelay = int(map(value, 0, 127, 1, 200));
     }

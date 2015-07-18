@@ -10,8 +10,6 @@ class GridController extends Controller {
   ArrayList<Sequence> sequences = new ArrayList<Sequence>();
   String seq_id = "000.seq";
   
-  ListBox seqList;
-  
   void setup(PApplet _app) {
     super.setup(_app);
     println("Setting up Grid");
@@ -25,41 +23,12 @@ class GridController extends Controller {
       }
     }
     println("Initialized " + str(iP) + " pixels");
-    
-    seqList = c5.addListBox("SequenceList")
-      .setPosition(100, 620)
-      .setSize(90, 75)
-      .setItemHeight(15)
-      .setBarHeight(15)
-      .setColorBackground(color(255, 128))
-      .setColorActive(color(0))
-      .setColorForeground(color(255, 100,0))
-      ;
-
-    seqList.captionLabel().toUpperCase(true);
-    seqList.captionLabel().set("Sequence");
-    seqList.captionLabel().setColor(0xffff0000);
-    seqList.captionLabel().style().marginTop = 3;
-    seqList.valueLabel().style().marginTop = 3;
-    
-    File file = new File(config.get("dataPath") + "\\sequences\\");
-    File[] files = file.listFiles();
-    for (int i = 0; i < files.length; i++) {
-      ListBoxItem lbi = seqList.addItem(files[i].getName(), i);
-      lbi.setColorBackground(color(55));
-    }
+   
   }
   
   void controlEvent(ControlEvent theEvent) {
-    println("Got control event: " + theEvent.name());
-    if (theEvent.name().equals(seqList.name())) {
-      int pick = (int)theEvent.group().value();
-      println("Picked " + pick);
-      println("File " + seqList.getItem(pick).getText());
-      
-      seqList.getItem(pick).setColorBackground(color(0, 255, 0));
-      this.seq_id = seqList.getItem(pick).getText();
-    }
+    //println("Got control event: " + theEvent.name());
+    
   }
   
   /*
@@ -198,5 +167,46 @@ class SimGridController extends GridController {
   color getColor(int input) {
     
     return p.pick(input);
+  }
+}
+
+class PlayGridController extends SimGridController {
+  SequenceLoadList seqList;
+  PaletteLoadList paletteList;
+  
+  void setup(PApplet _app) {
+    super.setup(_app);
+    
+    seqList = new SequenceLoadList(c5, "Sequence", new PVector(100, 630), new PVector(80, 100));
+    paletteList = new PaletteLoadList(c5, "Palette", new PVector(200, 630), new PVector(80, 100));
+  }
+  
+  void hide() {
+    seqList.list.setVisible(false);
+    paletteList.list.setVisible(false);
+    //.setVisible(false);
+  }
+  
+  void show() {
+    seqList.list.setVisible(true);
+    paletteList.list.setVisible(true);
+    //newseq.setVisible(true);
+  }
+  
+  void controlEvent(ControlEvent theEvent) {
+    super.controlEvent(theEvent);
+    
+    if (theEvent.name().equals(seqList.name())) {
+      int pick = (int)theEvent.group().value();
+      println("Picked " + pick);
+      println("File " + seqList.list.getItem(pick).getText());
+      
+      //seqList.list.getItem(pick).setColorBackground(color(0, 255, 255));
+      seqList.selected(pick);
+    } else if (theEvent.name().equals(paletteList.name())) {
+      int pick = (int)theEvent.group().value();
+      println("Picked " + pick);
+      paletteList.selected(pick);
+    }
   }
 }
