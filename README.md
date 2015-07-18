@@ -9,6 +9,15 @@ This is a work in progress for a mixed media installation to be displayed at DAT
 ![PixelPad - 003](http://prim8.net/img/PixelPad-003.jpg)
 ![PixelPad - editor](http://prim8.net/img/PixelPad-edit.jpg)
 
+Controls:
+Currently, korg padKontrol is supported, or you can use your computer keyboard (no velocity control).
+
+Keys:
+1-4
+q-r
+a-f
+z-v
+
 Requirements:
 
 * Processing 2
