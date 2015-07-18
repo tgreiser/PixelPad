@@ -13,6 +13,7 @@ StringDict config;
 String server = "192.168.0.12";
 boolean ENABLE_LED = false;
 boolean DRAW_GRID = true;
+int INITIAL_DELAY = 100;
 
 PadKontrol midi;
 

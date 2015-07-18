@@ -3,7 +3,7 @@ import controlP5.*;
 class GridController extends Controller {
   int rows = 10;
   int cols = 10;
-  int clockDelay = 250; 
+  int clockDelay = INITIAL_DELAY; 
   
   Pixel[] gpixels;
   boolean isAlternating = true;
