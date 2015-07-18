@@ -75,6 +75,7 @@ class SimGridController extends GridController {
   float offsetX = 0;
   float offsetY = 0;
   boolean velocity_colors;
+  float decay_rate = 0.0;
   
   float sw; // square width
   float sh; // square height .. *heh*
@@ -146,7 +147,12 @@ class SimGridController extends GridController {
           if (sequences.get(iX).stepHas(iP)) {
             println("Setting pixel " + str(iP));
            // + " R: " + str(red(sequences.get(iX).c)));
-            gpixels[iP].set(sequences.get(iX).c);
+            color c = sequences.get(iX).c;
+            float mult = pow(1 - this.decay_rate, sequences.get(iX).step);
+            color c2 = color(red(c) * mult, green(c) * mult, blue(c) * mult);
+            println("step: " + sequences.get(iX).step + " mult:" + mult +" decay_rate" + this.decay_rate);
+            //c.alpha -= c.alpha * this.decay_rate;
+            gpixels[iP].set(c2);
           }
         }
         this.drawPixel(iP++, iR, iC);
@@ -175,7 +181,7 @@ class PlayGridController extends SimGridController {
   SequenceLoadList seqList;
   PaletteLoadList paletteList;
   MyCheckbox cbOptions;
-  
+  MySlider decaySlider;
   
   void setup(PApplet _app) {
     super.setup(_app);
@@ -187,6 +193,9 @@ class PlayGridController extends SimGridController {
     cbOptions.cb.toggle(0);
     cbOptions.cb.addItem("Velocity Colors", 1);
     cbOptions.cb.toggle(1);
+    
+    decaySlider = new MySlider(c5, "Decay", new PVector(500, 605), new PVector(20, 100));
+    decaySlider.s.setMax(0.333);
   }
   
   void hide() {
@@ -220,6 +229,8 @@ class PlayGridController extends SimGridController {
       float[] optVals = theEvent.getArrayValue();
       DRAW_GRID = optVals[0] == 1.0;
       this.velocity_colors = optVals[1] == 1.0;
+    } else if (theEvent.name().equals(decaySlider.s.name())) {
+      this.decay_rate = theEvent.getValue();
     }
   }
 }

@@ -18,6 +18,24 @@ class MyCheckbox {
   }
 }
 
+class MySlider {
+  color colorActive = #133453;
+  color colorBG = #2A4D6E;
+  color colorSelected = #267257;
+
+  Slider s;
+  float value = 0.0;
+  
+  MySlider(ControlP5 c5, String title, PVector pos, PVector size) {
+    this.s = c5.addSlider(title)
+      .setPosition(pos.x, pos.y)
+      .setSize(int(size.x), int(size.y))
+      .setRange(0,1)
+      .setColorBackground(this.colorBG)
+      .setColorActive(this.colorSelected);
+  }
+}
+
 class LoadList {
   color colorActive = #133453;
   color colorBG = #2A4D6E;
