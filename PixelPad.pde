@@ -1,4 +1,10 @@
+import controlP5.*;
+
 import java.net.*;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsConfiguration;
+import java.awt.Rectangle;
 import java.util.Arrays;
 
 ControlP5 c5;
@@ -17,6 +23,7 @@ boolean DRAW_GRID = true;
 int INITIAL_DELAY = 100;
 
 PadKontrol midi;
+Rectangle monitor = new Rectangle();
 
 color cb1 = #728CA6;
 color cb2 = #4A6B8A;
@@ -37,7 +44,17 @@ color cg4 = #0E553C;
 color cg5 = #003925;
 
 void setup() {
-  size(600, 750);
+  GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+  GraphicsDevice[] gs = ge.getScreenDevices();
+  // gs[1] gets the *second* screen. gs[0] would get the primary screen
+  GraphicsDevice gd = gs[0];
+  GraphicsConfiguration[] gc = gd.getConfigurations();
+  monitor = gc[0].getBounds();
+  
+  println(monitor.x + " " + monitor.y + " " + monitor.width + " " + monitor.height);
+  size(monitor.width, monitor.height);
+  
+  //size(600, 750);
   background(0);
   c5 = new ControlP5(this);
   if (ENABLE_LED) { opc = new OPC(this, server, 7890); }
@@ -68,7 +85,15 @@ void setup() {
   menu.mode.activate("Play");
 }
 
+void init() {
+  frame.removeNotify();
+  frame.setUndecorated(true);
+  super.init();
+}
+
 void draw() {
+  frame.setLocation(monitor.x, monitor.y);
+  frame.setAlwaysOnTop(true); 
   background(0);
   
   for (Controller c : ctrls) {
@@ -118,11 +143,11 @@ void customize(ListBox ddl, String label) {
   // a convenience function to customize a DropdownList
   ddl.setItemHeight(20);
   ddl.setBarHeight(15);
-  ddl.captionLabel().set(label);
-  ddl.captionLabel().style().marginTop = 3;
-  ddl.captionLabel().style().marginLeft = 3;
-  ddl.captionLabel().setColor(cg1);
-  ddl.valueLabel().style().marginTop = 3;
+  ddl.getCaptionLabel().set(label);
+  ddl.getCaptionLabel().getStyle().marginTop = 3;
+  ddl.getCaptionLabel().getStyle().marginLeft = 3;
+  ddl.getCaptionLabel().setColor(cg1);
+  ddl.getValueLabel().getStyle().marginTop = 3;
   
   //ddl.scroll(0);
   ddl.setColorBackground(cb3);

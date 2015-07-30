@@ -105,7 +105,7 @@ class Sequence {
   
   boolean stepHasDisabled(int value) {
     boolean debug = false;
-    if (value == 99) {
+    if (value == 1273) {
       debug = true; 
       println("Value " + value + " offset " + this.offset+ " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols);
     }

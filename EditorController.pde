@@ -9,19 +9,22 @@ class EditorController extends SimGridController {
     super.setup(_app);
     
     save = c5.addButton("Save")
-      .setPosition(550, 605)
+      .setPosition(400, 1000)
       .setColorBackground(color(0))
-      .setSize(57, 19);
+      .setSize(114, 38);
+    grid.setFont(save.getCaptionLabel());
       
     load = c5.addButton("Load")
-      .setPosition(550, 635)
+      .setPosition(520, 1000)
       .setColorBackground(color(0))
-      .setSize(57, 19);
+      .setSize(114, 38);
+    grid.setFont(load.getCaptionLabel());
       
     newseq = c5.addButton("New")
-      .setPosition(550, 665)
+      .setPosition(640, 1000)
       .setColorBackground(color(0))
-      .setSize(57, 19);
+      .setSize(114, 38);
+    grid.setFont(newseq.getCaptionLabel());
       
     sequence = new Sequence();
     sequence.init();
@@ -50,11 +53,7 @@ class EditorController extends SimGridController {
           gpixels[iP].set(color(255, 0, 0));
         }
         
-        gpixels[iP++].draw();
-        float x1 = sw * iC;
-        float y1 = sh * iR;
-        
-        rect(x1, y1, sw, sh);
+        this.drawPixel(iP++, iR, iC);
       }
     } 
   }

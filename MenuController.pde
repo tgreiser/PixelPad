@@ -7,13 +7,20 @@ class MenuController extends Controller {
     super.setup(_app);
     
     mode = c5.addRadioButton("Mode")
-      .setPosition(5, 605)
+      .setPosition(300, 5)
       .setColorBackground(color(55))
-      .setSize(57, 19)
+      .setSize(114, 38)
       .addItem("Edit", 1.0)
       .addItem("Play", 2.0)
       .setNoneSelectedAllowed(false)
       .setColorActive(#267257)
+      ;
+      
+    grid.setFont(mode.getItem(0).getCaptionLabel());
+
+    mode.getItem(1).getCaptionLabel()
+      .setFont(grid.font)
+      .setSize(32)
       ;
   }
   

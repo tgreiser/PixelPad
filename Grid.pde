@@ -39,6 +39,8 @@ class GridController extends Controller {
   flipY - feflect along Y axis - boolean
   */
   void addSeq(color c, PVector position, boolean flipX, boolean flipY) {
+    if (sequences.size() > 32) { return; }
+    
     Sequence s = new Sequence();
     s.loadData(new File(config.get("dataPath")+"sequences\\" + this.seq_id));
     s.c = c;
@@ -70,12 +72,14 @@ class GridController extends Controller {
 }
 
 class SimGridController extends GridController {
-  float w = 600;
-  float h = 600;
-  float offsetX = 0;
+  float w = 1078;
+  float h = 1078;
+  float offsetX = 832;
   float offsetY = 0;
   boolean velocity_colors;
   float decay_rate = 0.0;
+  PFont pfont = createFont("Terminal",40,false); // use true/false for smooth/no-smooth
+  ControlFont font = new ControlFont(pfont,241);
   
   float sw; // square width
   float sh; // square height .. *heh*
@@ -132,8 +136,9 @@ class SimGridController extends GridController {
 
     float x1 = sw * col;
     float y1 = sh * row;
-        
-    rect(x1, y1, sw, sh);
+    
+    //if (row == 0) { println("   
+    rect(x1 + offsetX, y1 + offsetY, sw , sh);
   }
   
   void drawPixelPad() {
@@ -145,12 +150,12 @@ class SimGridController extends GridController {
         
         for (int iX = 0; iX < sequences.size(); iX++) {
           if (sequences.get(iX).stepHas(iP)) {
-            println("Setting pixel " + str(iP));
+            //println("Setting pixel " + str(iP));
            // + " R: " + str(red(sequences.get(iX).c)));
             color c = sequences.get(iX).c;
             float mult = pow(1 - this.decay_rate, sequences.get(iX).step);
             color c2 = color(red(c) * mult, green(c) * mult, blue(c) * mult);
-            println("step: " + sequences.get(iX).step + " mult:" + mult +" decay_rate" + this.decay_rate);
+            //println("step: " + sequences.get(iX).step + " mult:" + mult +" decay_rate" + this.decay_rate);
             //c.alpha -= c.alpha * this.decay_rate;
             gpixels[iP].set(c2);
           }
@@ -182,55 +187,97 @@ class PlayGridController extends SimGridController {
   PaletteLoadList paletteList;
   MyCheckbox cbOptions;
   MySlider decaySlider;
+  int minute;
   
   void setup(PApplet _app) {
     super.setup(_app);
     
-    seqList = new SequenceLoadList(c5, "Sequence", new PVector(100, 630), new PVector(80, 100));
-    paletteList = new PaletteLoadList(c5, "Palette", new PVector(200, 630), new PVector(160, 100));
-    cbOptions = new MyCheckbox(c5, "Options", new PVector(380, 605), new PVector(30, 20));
+    seqList = new SequenceLoadList(c5, "Sequence", new PVector(300, 250), new PVector(160, 800));
+    paletteList = new PaletteLoadList(c5, "Palette", new PVector(500, 250), new PVector(300, 400));
+    cbOptions = new MyCheckbox(c5, "Options", new PVector(300, 100), new PVector(60, 40));
     cbOptions.cb.addItem("Show Grid", 0);
     cbOptions.cb.toggle(0);
+    grid.setFont(cbOptions.cb.getItem(0).getCaptionLabel());
     cbOptions.cb.addItem("Velocity Colors", 1);
     cbOptions.cb.toggle(1);
+    grid.setFont(cbOptions.cb.getItem(1).getCaptionLabel());
     
-    decaySlider = new MySlider(c5, "Decay", new PVector(500, 605), new PVector(20, 100));
+    decaySlider = new MySlider(c5, "Decay", new PVector(500, 600), new PVector(50, 400));
     decaySlider.s.setMax(0.333);
+    grid.setFont(decaySlider.s.getCaptionLabel());
+    grid.setFont(decaySlider.s.getValueLabel());
+  }
+  
+  void addSeq(color c, PVector position, boolean flipX, boolean flipY) {
+    super.addSeq(c, position, flipX, flipY);
+    this.minute = minute();
+  }
+  
+  void draw() {
+    super.draw();
+    if (minute() > this.minute+1 || (minute() == 0 && this.minute == 58) || (minute() == 1 && this.minute == 59)) {
+      // chance to add a sequence
+      float r = random(100);
+      if (r > 90) {
+        int c = int(random(128));
+        int bc = int(random(4));
+        int br = int(random(4));
+        boolean flipX = false;
+        boolean flipY = false;
+        if (bc > 1) { flipY = true; }
+        if (br <= 1) { flipX = true; }
+        super.addSeq(this.getColor(c), new PVector(bc * 3, br * 3), flipX, flipY);
+      }
+    }
   }
   
   void hide() {
     seqList.list.setVisible(false);
     paletteList.list.setVisible(false);
     cbOptions.cb.setVisible(false);
+    decaySlider.s.setVisible(false);
   }
   
   void show() {
     seqList.list.setVisible(true);
     paletteList.list.setVisible(true);
     cbOptions.cb.setVisible(true);
+    decaySlider.s.setVisible(true);
   }
   
   void controlEvent(ControlEvent theEvent) {
     super.controlEvent(theEvent);
     
     if (theEvent.name().equals(seqList.name())) {
-      int pick = (int)theEvent.group().value();
+      int pick = (int)theEvent.getValue();
       println("Picked " + pick);
-      println("File " + seqList.list.getItem(pick).getText());
+      println("File " + seqList.list.getItem(pick));
       
       //seqList.list.getItem(pick).setColorBackground(color(0, 255, 255));
       seqList.selected(pick);
     } else if (theEvent.name().equals(paletteList.name())) {
-      int pick = (int)theEvent.group().value();
+      int pick = (int)theEvent.getValue();
       println("Picked " + pick);
       paletteList.selected(pick);
-    } else if (theEvent.name().equals(cbOptions.cb.name())) {
+    } else if (theEvent.name().equals(cbOptions.cb.getName())) {
       println(cbOptions.cb.getArrayValue());
       float[] optVals = theEvent.getArrayValue();
       DRAW_GRID = optVals[0] == 1.0;
       this.velocity_colors = optVals[1] == 1.0;
-    } else if (theEvent.name().equals(decaySlider.s.name())) {
+    } else if (theEvent.name().equals(decaySlider.s.getName())) {
       this.decay_rate = theEvent.getValue();
     }
+  }
+  
+  void setFont(Label label) {
+    label.setFont(grid.font)
+      .setSize(32)
+      ;
+  }
+  
+  void smallFont(Label label) {
+    label.setFont(grid.font)
+      .setSize(22)
+      ;
   }
 }

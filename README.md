@@ -21,5 +21,5 @@ Keys:
 Requirements:
 
 * Processing 2
-* Control5P
+* Control5P - version 2.2.4+ from github - https://github.com/sojamo/controlp5/releases
 * MidiBus - http://www.smallbutdigital.com/themidibus.php

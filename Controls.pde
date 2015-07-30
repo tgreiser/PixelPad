@@ -41,22 +41,25 @@ class LoadList {
   color colorBG = #2A4D6E;
   color colorSelected = #267257;
   
-  ListBox list;
+  ScrollableList list;
   int selectedIndex = -1;
   int count = 0;
   
   LoadList(ControlP5 c5, String title, PVector pos, PVector size) {
-    this.list = c5.addListBox(title)
+    this.list = c5.addScrollableList(title)
       .setPosition(pos.x, pos.y)
       .setSize(int(size.x), int(size.y))
-      .setItemHeight(20)
-      .setBarHeight(20)
+      .setType(ControlP5.LIST)
+      .setItemHeight(40)
+      .setBarHeight(40)
       .setColorBackground(this.colorBG)
       .setColorActive(this.colorSelected);
-    this.list.captionLabel().set(title);
-    this.list.captionLabel().style().marginTop = 3;
-    this.list.captionLabel().style().marginLeft = 3;
-    this.list.captionLabel().setColor(color(255));
+    this.list.getCaptionLabel().set(title);
+    this.list.getCaptionLabel().getStyle().marginTop = 3;
+    this.list.getCaptionLabel().getStyle().marginLeft = 3;
+    this.list.getCaptionLabel().setColor(color(255));
+    grid.smallFont(this.list.getCaptionLabel());
+    grid.smallFont(this.list.getValueLabel());
       
     this.load();
     if (this.length() > 0) { this.selected(0); }
@@ -69,8 +72,8 @@ class LoadList {
   void load() {
     int i = 0;
     for (i=0;i<80;i++) {
-       ListBoxItem lbi = list.addItem("item "+i, i);
-       lbi.setColorBackground(this.colorBG);
+       list.addItem("item "+i, i);
+       list.setColorBackground(this.colorBG);
      }
      this.count = i - 1;
   }
@@ -79,15 +82,20 @@ class LoadList {
     println("currentIndex:  "+currentIndex + " length: " + this.length());
     if (this.length() <= currentIndex) { return; }
     if(this.selectedIndex >= 0){//if something was previously selected
-      ListBoxItem previousItem = list.getItem(this.selectedIndex);//get the item
-      previousItem.setColorBackground(this.colorBG);//and restore the original bg colours
+      Map<String,Object> pi = list.getItem(this.selectedIndex);//get the item
+      CColor picolor = new CColor();
+      picolor.setBackground(this.colorBG);
+      pi.put("color", picolor);//and restore the original bg colours
     }
     this.selectedIndex = currentIndex;//update the selected index
-    this.list.getItem(this.selectedIndex).setColorBackground(this.colorSelected);//and set the bg colour to be the active/'selected one'...until a new selection is made and resets this, like above
+    Map<String,Object> ci = this.list.getItem(this.selectedIndex);
+    CColor cicolor = new CColor();
+    cicolor.setBackground(this.colorSelected);
+    ci.put("color", cicolor);//and set the bg colour to be the active/'selected one'...until a new selection is made and resets this, like above
   }
   
    String name() {
-     return list.name();
+     return list.getName();
    }
 }
 
@@ -101,8 +109,8 @@ class SequenceLoadList extends LoadList {
     File[] files = file.listFiles();
     this.list.clear();
     for (int i = 0; i < files.length; i++) {
-      ListBoxItem lbi = this.list.addItem(files[i].getName(), i);
-      lbi.setColorBackground(this.colorBG);
+      this.list.addItem(files[i].getName(), i);
+     // lbi.setColorBackground(this.colorBG);
     }
     this.count = files.length;
     this.selected(0);
@@ -110,9 +118,10 @@ class SequenceLoadList extends LoadList {
   
   void selected(int currentIndex) {
     super.selected(currentIndex);
-    ListBoxItem li = this.list.getItem(currentIndex);
+    Map< String , Object > li = this.list.getItem(currentIndex);
     if (grid != null && li != null) { 
-      grid.seq_id = li.getText();
+      String mkey = "text";
+      grid.seq_id = li.get(mkey).toString();
       println("Loaded " + grid.seq_id);
     }
   }
@@ -130,8 +139,7 @@ class PaletteLoadList extends LoadList {
     for (int i = 0; i < files.length; i++) {
       String name = files[i].getName();
       if (name.toLowerCase().endsWith(".tsv") == false) { continue; }
-      ListBoxItem lbi = this.list.addItem(name, iX);
-      lbi.setColorBackground(this.colorBG);
+      this.list.addItem(name, iX);
       iX++;
     }
     this.count = files.length;
@@ -139,10 +147,10 @@ class PaletteLoadList extends LoadList {
   
   void selected(int currentIndex) {
     super.selected(currentIndex);
-    ListBoxItem li = this.list.getItem(currentIndex);
+    Map<String, Object> li = this.list.getItem(currentIndex);
     if (grid != null && li != null) {
-      String pname = li.getText(); 
-      grid.p.load(li.getText());
+      String pname = li.get("text").toString(); 
+      grid.p.load(pname);
       println("Loaded " + pname);
     }
   } 
