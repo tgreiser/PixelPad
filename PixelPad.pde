@@ -20,6 +20,7 @@ String server = "127.0.0.1";
 //"192.168.0.12";
 boolean ENABLE_LED = false;
 boolean DRAW_GRID = true;
+boolean FULL_SCREEN = true;
 int INITIAL_DELAY = 100;
 
 PadKontrol midi;
@@ -51,10 +52,12 @@ void setup() {
   GraphicsConfiguration[] gc = gd.getConfigurations();
   monitor = gc[0].getBounds();
   
-  println(monitor.x + " " + monitor.y + " " + monitor.width + " " + monitor.height);
-  size(monitor.width, monitor.height);
-  
-  //size(600, 750);
+  if (FULL_SCREEN) {
+    println(monitor.x + " " + monitor.y + " " + monitor.width + " " + monitor.height);
+    size(monitor.width, monitor.height);
+  } else {
+    size(600, 600);
+  }
   background(0);
   c5 = new ControlP5(this);
   if (ENABLE_LED) { opc = new OPC(this, server, 7890); }
@@ -92,8 +95,10 @@ void init() {
 }
 
 void draw() {
-  frame.setLocation(monitor.x, monitor.y);
-  frame.setAlwaysOnTop(true); 
+  if (FULL_SCREEN) {
+    frame.setLocation(monitor.x, monitor.y);
+    frame.setAlwaysOnTop(true);
+  }
   background(0);
   
   for (Controller c : ctrls) {

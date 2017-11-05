@@ -14,6 +14,11 @@ class PadKontrol extends MidiController implements SimpleMidiListener {
     if (ins.contains("padKONTROL 1 PORT A")) {
       myBus = new MidiBus(_app, "padKONTROL 1 PORT A", "padKONTROL 1 CTRL"); // Create a new MidiBus (PApplet, in_device_name, out_device_name)
       myBus.addMidiListener(this);
+      println("Listen for:  padKONTROL 1 PORT A");
+    } else if (ins.contains("MIDIIN2 (padKONTROL)")) {
+      myBus = new MidiBus(_app, "MIDIIN2 (padKONTROL)", "MIDIOUT2 (padKONTROL)"); // Create a new MidiBus (PApplet, in_device_name, out_device_name)
+      myBus.addMidiListener(this);
+     println("Listen for:  padKONTROL");
     } else {
       println("Skipping padKONTROL, not detected...");
     }

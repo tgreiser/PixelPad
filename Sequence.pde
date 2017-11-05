@@ -57,9 +57,6 @@ class Sequence {
     data[step][iP] = false;
   }
   
-  /*
-  Disabled cause not working yet
-  */
   boolean stepHas(int value) {
     boolean debug = false;
     int r = 0;
@@ -102,29 +99,6 @@ class Sequence {
     if (value < 0 || value >= data[this.step].length) { return false; }
     return data[this.step][value];
   }
-  
-  boolean stepHasDisabled(int value) {
-    boolean debug = false;
-    if (value == 1273) {
-      debug = true; 
-      println("Value " + value + " offset " + this.offset+ " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols);
-    }
-    value = value - this.offset;
-    int r = grid.calcRow(value);
-    int c = grid.calcCol(value);
-    if (debug) { println("Value " + value + " r: " + r + " c: " + c); }
-    
-    if (r + this.offsetRows >= grid.rows || r + this.offsetRows < 0) { return false; }
-    if (c + this.offsetCols >= grid.cols || c + this.offsetCols < 0) { return false; }
-    
-    if (debug) { println("Value " + value + " offsetRows: " + this.offsetRows + " offsetCols: " + this.offsetCols); }
-    
-    value = 10*(r)+c;
-    if (debug) { println("Final value " + value); }
-    if (value < 0 || value >= data[this.step].length) { return false; }
-    return data[this.step][value];
-  }
-  
 
   /**
    * Save the data to disk

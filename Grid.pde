@@ -72,10 +72,10 @@ class GridController extends Controller {
 }
 
 class SimGridController extends GridController {
-  float w = 1078;
-  float h = 1078;
+  float w = 900; // 1078
+  float h = 900;
   float offsetX = 832;
-  float offsetY = 0;
+  float offsetY = 64;
   boolean velocity_colors;
   float decay_rate = 0.0;
   PFont pfont = createFont("Terminal",40,false); // use true/false for smooth/no-smooth
